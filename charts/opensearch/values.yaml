@@ -5,7 +5,7 @@ nodeGroup: "master"
 # If discovery.type in the opensearch configuration is set to "single-node",
 # this should be set to "true"
 # If "true", replicas will be forced to 1
-singleNode: false
+singleNode: true
 
 # The service that non master groups will try to connect to when joining the cluster
 # This should be set to clusterName + "-" + nodeGroup for your master group
@@ -19,7 +19,7 @@ roles:
   - data
   - remote_cluster_client
 
-replicas: 3
+replicas: 1
 
 # if not set, falls back to parsing .Values.imageTag, then .Chart.appVersion.
 majorVersion: ""
@@ -190,6 +190,7 @@ podSecurityPolicy:
       - emptyDir
 
 persistence:
+  persistentVolumeClaim: pvc-name
   enabled: true
   # Set to false to disable the `fsgroup-volume` initContainer that will update permissions on the persistent disk.
   enableInitChown: true
@@ -242,7 +243,7 @@ antiAffinityTopologyKey: "kubernetes.io/hostname"
 
 # Hard means that by default pods will only be scheduled if there are enough nodes for them
 # and that they will never end up on the same node. Setting this to soft will do this "best effort"
-antiAffinity: "soft"
+antiAffinity: "hard"
 
 # This is the node affinity settings as defined in
 # https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#node-affinity-beta-feature
@@ -462,7 +463,7 @@ sysctl:
 
 ## Set optimal sysctl's through privileged initContainer.
 sysctlInit:
-  enabled: false
+  enabled: true
   # override image, which is busybox by default
   # image: busybox
   # override image tag, which is latest by default
